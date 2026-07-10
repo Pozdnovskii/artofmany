@@ -1,0 +1,63 @@
+---
+import Base from "@layouts/Base.astro";
+import CaseGrid from "@components/CaseGrid.astro";
+import { urlFor } from "@lib/image";
+import { getTeam } from "@lib/queries";
+
+const team = await getTeam();
+---
+
+<Base
+  title="Team — Artofmany"
+  description="The people behind Artofmany — Barcelona & Dubai."
+>
+  <div class="wrap py-6 md:py-8">
+    <h1 class="sr-only">Team</h1>
+
+    <div class="flex max-w-2xl flex-col gap-12 md:gap-14">
+      {
+        team.map((member) => {
+          // photo is required in the schema — no null check needed.
+          const photo = urlFor(member.photo).width(600).height(600).fit("crop").quality(82).auto("format").url();
+          const contacts = member.contactLinks ?? [];
+          return (
+            <article>
+              <h2 class="mb-1">{member.role ? `${member.name}, ${member.role}` : member.name}</h2>
+              <img
+                src={photo}
+                alt={member.photo.alt || member.name}
+                width="600"
+                height="600"
+                loading="lazy"
+                class="w-[260px] max-w-full"
+              />
+              {member.bio && (
+                <div class="mt-4 space-y-3">
+                  {member.bio.split(/\n\n+/).map((p) => (
+                    <p>{p}</p>
+                  ))}
+                </div>
+              )}
+              {contacts.length > 0 && (
+                <address class="mt-4 flex flex-wrap gap-x-5 not-italic">
+                  {contacts.map((link) => (
+                    <a
+                      href={link.url}
+                      target={link.url.startsWith("mailto:") ? undefined : "_blank"}
+                      rel="noopener noreferrer"
+                      class="hover:text-accent"
+                    >
+                      {link.label}
+                    </a>
+                  ))}
+                </address>
+              )}
+            </article>
+          );
+        })
+      }
+    </div>
+  </div>
+
+  <CaseGrid />
+</Base>

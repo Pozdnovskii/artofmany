@@ -1,0 +1,29 @@
+---
+import { toHTML } from "@portabletext/to-html";
+import type { PortableTextBlock } from "@portabletext/types";
+
+interface Props {
+  value: PortableTextBlock[] | undefined | null;
+  class?: string;
+}
+const { value, class: className = "" } = Astro.props;
+
+const escapeAttr = (s: string) => s.replace(/"/g, "&quot;");
+
+const html = value
+  ? toHTML(value, {
+      components: {
+        marks: {
+          link: ({ children, value: v }) => {
+            const href = v?.href ?? "#";
+            const external = /^https?:\/\//i.test(href);
+            const rel = external ? ' target="_blank" rel="noopener noreferrer"' : "";
+            return `<a href="${escapeAttr(href)}"${rel}>${children}</a>`;
+          },
+        },
+      },
+    })
+  : "";
+---
+
+{html && <div class:list={["prose-links", className]} set:html={html} />}

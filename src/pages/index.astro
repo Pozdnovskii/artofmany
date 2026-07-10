@@ -1,15 +1,27 @@
 ---
-import "@styles/global.css";
+import Base from "@layouts/Base.astro";
+import CaseGrid from "@components/CaseGrid.astro";
+import { getHomeVideoUrl } from "@lib/queries";
+
+const videoUrl = await getHomeVideoUrl();
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Art of Many</title>
-	</head>
-	<body>
-		<h1 class="sr-only">Art of Many</h1>
-		<p>Project scaffold — pages come next.</p>
-	</body>
-</html>
+<Base title="Artofmany — Interdisciplinary Creative Studio">
+  <h1 class="sr-only">Artofmany — interdisciplinary creative studio</h1>
+
+  {
+    videoUrl && (
+      <video
+        src={videoUrl}
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        class="aspect-video w-full object-cover mb-4"
+      />
+    )
+  }
+
+  <CaseGrid />
+</Base>

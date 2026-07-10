@@ -1,0 +1,3 @@
+# Local scrape cache and dry-run output — not committed
+.cache/
+.out/

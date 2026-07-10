@@ -1,0 +1,58 @@
+---
+import { urlFor } from "@lib/image";
+import { vimeoId } from "@lib/media";
+import type { ImageWithAlt } from "@lib/queries";
+
+interface Props {
+  url: string;
+  poster?: ImageWithAlt;
+  title?: string;
+}
+const { url, poster, title } = Astro.props;
+const id = vimeoId(url);
+const posterSrc = poster?.asset ? urlFor(poster).width(1800).quality(80).auto("format").url() : null;
+---
+
+{
+  id && (
+    <div class="video-facade relative aspect-video w-full overflow-hidden bg-black" data-provider="vimeo" data-id={id}>
+      {posterSrc && (
+        <img
+          src={posterSrc}
+          alt={poster?.alt || title || "Video"}
+          loading="lazy"
+          class="absolute inset-0 h-full w-full object-cover"
+        />
+      )}
+      <button type="button" class="group absolute inset-0 grid place-items-center" aria-label="Play video">
+        <span class="grid h-16 w-16 place-items-center rounded-full bg-white/90 shadow-lg transition-transform duration-200 group-hover:scale-105">
+          <svg viewBox="0 0 24 24" class="h-6 w-6 translate-x-[2px] fill-black">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+        </span>
+      </button>
+    </div>
+  )
+}
+
+<script>
+  // Click-to-load facade — no third-party JS until the visitor plays the video.
+  document.querySelectorAll<HTMLElement>(".video-facade").forEach((el) => {
+    if (el.dataset.wired) return;
+    el.dataset.wired = "1";
+    el.querySelector("button")?.addEventListener("click", () => {
+      const provider = el.dataset.provider;
+      const id = el.dataset.id;
+      const src =
+        provider === "youtube"
+          ? `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`
+          : `https://player.vimeo.com/video/${id}?autoplay=1&byline=0&portrait=0`;
+      const iframe = document.createElement("iframe");
+      iframe.src = src;
+      iframe.className = "absolute inset-0 h-full w-full";
+      iframe.allow = "autoplay; fullscreen; picture-in-picture; encrypted-media";
+      iframe.setAttribute("allowfullscreen", "");
+      el.replaceChildren(iframe);
+    });
+  });
+</script>

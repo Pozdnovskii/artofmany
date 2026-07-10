@@ -1,0 +1,92 @@
+---
+import Base from "@layouts/Base.astro";
+import PortableText from "@components/PortableText.astro";
+import VimeoEmbed from "@components/VimeoEmbed.astro";
+import YouTubeEmbed from "@components/YouTubeEmbed.astro";
+import CaseGrid from "@components/CaseGrid.astro";
+import { urlFor } from "@lib/image";
+import { sanityClient } from "@lib/sanity";
+import type { Project } from "@lib/queries";
+
+export async function getStaticPaths() {
+  const projects: Project[] = await sanityClient.fetch(
+    `*[_type == "project" && defined(slug.current)] | order(order asc){
+      _id, title, "slug": slug.current, categories, coverImage,
+      description, gallery, videos, metaTitle, metaDescription
+    }`,
+  );
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+interface Props {
+  project: Project;
+}
+const { project } = Astro.props;
+
+const ogImage = project.coverImage?.asset
+  ? urlFor(project.coverImage).width(1200).height(630).fit("crop").url()
+  : undefined;
+
+// Full-bleed gallery images — served straight from the Sanity CDN (on-demand
+// resize/format). Sharp/<Image> is reserved for the case-grid covers only.
+const galleryImages = (project.gallery ?? []).map((img) => ({
+  alt: img.alt || project.title,
+  src: urlFor(img).width(2560).quality(82).auto("format").url(),
+  src1280: urlFor(img).width(1280).quality(82).auto("format").url(),
+}));
+---
+
+<Base
+  title={project.metaTitle || `${project.title} — Artofmany`}
+  description={project.metaDescription}
+  ogImage={ogImage}
+>
+  <article aria-labelledby="case-title">
+    <h1 id="case-title" class="sr-only">{project.title}</h1>
+
+    {
+      project.description && (
+        <div class="wrap pb-6 md:pb-8">
+          <PortableText value={project.description} class="max-w-2xl" />
+        </div>
+      )
+    }
+
+    <!-- full-bleed media, edge to edge, minimal gaps -->
+    <section aria-label="Media" class="flex flex-col gap-1">
+    {
+      galleryImages.map((img) => (
+        <img
+          data-reveal
+          src={img.src}
+          srcset={`${img.src1280} 1280w, ${img.src} 2560w`}
+          sizes="100vw"
+          alt={img.alt}
+          loading="lazy"
+          class="w-full"
+        />
+      ))
+    }
+    {
+      (project.videos ?? []).map((v) => (
+        <div data-reveal class="w-full">
+          {v._type === "youtube" ? (
+            <YouTubeEmbed url={v.youtubeUrl!} title={project.title} />
+          ) : (
+            <VimeoEmbed
+              url={v.vimeoUrl!}
+              poster={v.poster}
+              title={project.title}
+            />
+          )}
+        </div>
+      ))
+    }
+    </section>
+  </article>
+
+  <CaseGrid />
+</Base>

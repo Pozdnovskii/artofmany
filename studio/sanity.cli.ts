@@ -6,6 +6,10 @@ export default defineCliConfig({
     projectId: "4d6uk72c",
     dataset: "production",
   },
+  studioHost: "artofmany",
+  deployment: {
+    appId: "a7kjic95i1r5wtqsosp2yowz",
+  },
   vite: {
     resolve: {
       alias: {

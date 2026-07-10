@@ -1,0 +1,23 @@
+---
+import ProjectCard from "@components/ProjectCard.astro";
+import FilterBar from "@components/FilterBar.astro";
+import { getProjects } from "@lib/queries";
+
+interface Props {
+  /** Section heading level: 1 on the Projects page, 2 where the grid is secondary. */
+  headingLevel?: 1 | 2;
+}
+const { headingLevel = 2 } = Astro.props;
+const SectionHeading = `h${headingLevel}` as "h1" | "h2";
+const cardLevel = (headingLevel + 1) as 2 | 3;
+
+const projects = await getProjects();
+---
+
+<section id="work" aria-labelledby="work-heading" class="maxw px-0 py-1">
+  <SectionHeading id="work-heading" class="sr-only">Projects</SectionHeading>
+  <FilterBar />
+  <ul id="grid" class="grid grid-cols-1 gap-1 md:grid-cols-2">
+    {projects.map((p) => <ProjectCard project={p} headingLevel={cardLevel} />)}
+  </ul>
+</section>

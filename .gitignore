@@ -17,3 +17,7 @@ node_modules/
 # sanity
 studio/dist/
 studio/.sanity/
+
+# internal working docs (not part of the site)
+PLAN.md
+REVIEW_NOTES.md

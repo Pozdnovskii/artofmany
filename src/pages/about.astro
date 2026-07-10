@@ -1,0 +1,81 @@
+---
+import Base from "@layouts/Base.astro";
+import PortableText from "@components/PortableText.astro";
+import CaseGrid from "@components/CaseGrid.astro";
+import { getAbout, getContact } from "@lib/queries";
+
+const [about, contact] = await Promise.all([getAbout(), getContact()]);
+const social = contact?.socialLinks ?? [];
+const offices = about?.offices ?? [];
+
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+// Email / phone lines become mailto: / tel: links.
+function lineHref(line: string): string | null {
+  if (line.includes("@")) return `mailto:${line.trim()}`;
+  if (/^\+?[\d][\d\s]{6,}$/.test(line.trim())) return `tel:${line.replace(/\s+/g, "")}`;
+  return null;
+}
+---
+
+<Base
+  title="About — Artofmany"
+  description="Artofmany is an interdisciplinary creative studio founded by Jofre Sanfeliu, with offices in Barcelona and Dubai."
+>
+  <h1 class="sr-only">About</h1>
+
+  <div class="wrap py-6 md:py-8">
+    <div class="flex max-w-2xl flex-col gap-8">
+      {about?.bio && <PortableText value={about.bio} class="space-y-5" />}
+
+      {
+        (social.length > 0 || offices.length > 0) && (
+          <address class="flex flex-col gap-6 not-italic">
+            {social.length > 0 && (
+              <div class="flex flex-wrap items-center gap-x-1.5">
+                {social.map((s, i) => (
+                  // slash grouped with its link so it never wraps alone
+                  <span class="inline-flex items-center gap-x-1.5 whitespace-nowrap">
+                    {i > 0 && <span>/</span>}
+                    <a href={s.url} target="_blank" rel="noopener noreferrer" class="hover:text-accent">
+                      {cap(s.platform)}
+                    </a>
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {offices.map((office) => (
+              <div>
+                {office.mapLink ? (
+                  <a
+                    href={office.mapLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="block w-fit hover:text-accent"
+                  >
+                    {office.city}
+                  </a>
+                ) : (
+                  <span class="block">{office.city}</span>
+                )}
+                {(office.addressLines ?? []).map((line) => {
+                  const href = lineHref(line);
+                  return href ? (
+                    <a href={href} class="block w-fit hover:text-accent">
+                      {line}
+                    </a>
+                  ) : (
+                    <span class="block">{line}</span>
+                  );
+                })}
+              </div>
+            ))}
+          </address>
+        )
+      }
+    </div>
+  </div>
+
+  <CaseGrid />
+</Base>

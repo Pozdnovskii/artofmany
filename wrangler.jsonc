@@ -1,0 +1,15 @@
+{
+  "compatibility_date": "2026-07-10",
+  // nodejs_compat: lets the @astrojs/cloudflare image endpoint use Node built-ins
+  // in the workerd dev runner. Inert for the fully-prerendered production worker.
+  "compatibility_flags": ["global_fetch_strictly_public", "nodejs_compat"],
+  "name": "artofmany",
+  "main": "@astrojs/cloudflare/entrypoints/server",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+  },
+  "observability": {
+    "enabled": true,
+  },
+}

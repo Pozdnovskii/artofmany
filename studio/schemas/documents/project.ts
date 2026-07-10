@@ -53,13 +53,15 @@ export const project = defineType({
     }),
     defineField({
       name: "videos",
-      title: "Videos (Vimeo)",
+      title: "Videos",
       type: "array",
       group: "content",
       of: [
+        // Vimeo — poster is uploaded manually (no reliable public Vimeo thumbnail API).
         defineArrayMember({
           type: "object",
           name: "video",
+          title: "Vimeo video",
           icon: PlayIcon,
           fields: [
             defineField({
@@ -76,6 +78,29 @@ export const project = defineType({
               title: "Vimeo video",
               subtitle: vimeoUrl,
               media,
+            }),
+          },
+        }),
+        // YouTube — rendered via the astro-embed YouTube facade, which pulls its
+        // own thumbnail, so no poster field is needed here.
+        defineArrayMember({
+          type: "object",
+          name: "youtube",
+          title: "YouTube video",
+          icon: PlayIcon,
+          fields: [
+            defineField({
+              name: "youtubeUrl",
+              type: "url",
+              title: "YouTube URL *",
+              validation: (r) => r.required(),
+            }),
+          ],
+          preview: {
+            select: { youtubeUrl: "youtubeUrl" },
+            prepare: ({ youtubeUrl }) => ({
+              title: "YouTube video",
+              subtitle: youtubeUrl,
             }),
           },
         }),
