@@ -31,7 +31,7 @@ const ogImage = project.coverImage?.asset
   : undefined;
 
 // Full-bleed gallery images — served straight from the Sanity CDN (on-demand
-// resize/format). Sharp/<Image> is reserved for the case-grid covers only.
+// resize/format), same as the case-grid covers. No build-time image processing.
 const galleryImages = (project.gallery ?? []).map((img) => ({
   alt: img.alt || project.title,
   src: urlFor(img).width(2560).quality(82).auto("format").url(),

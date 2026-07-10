@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import { urlFor } from "@lib/image";
 import type { ProjectCardData } from "@lib/queries";
 
@@ -11,18 +10,31 @@ interface Props {
 const { project, headingLevel = 3 } = Astro.props;
 const Heading = `h${headingLevel}` as "h2" | "h3";
 
-// Sanity crops to 16:9 server-side; Sharp then re-encodes + builds the srcset.
-const cover = urlFor(project.coverImage).width(1280).height(720).fit("crop").url();
+// Covers are 16:9 grid thumbnails (≤1280 CSS px). Sanity's CDN crops, re-encodes
+// to webp/avif and serves from a global cache — no build-time Sharp cost. Two
+// widths cover 1x/2x for the 50vw (desktop) / 100vw (mobile) slots.
+const coverUrl = (w: number) =>
+  urlFor(project.coverImage)
+    .width(w)
+    .height(Math.round((w * 9) / 16))
+    .fit("crop")
+    .auto("format")
+    .quality(75)
+    .url();
+const cover1x = coverUrl(640);
+const cover2x = coverUrl(1280);
 ---
 
 <li class="group relative" data-reveal data-categories={(project.categories ?? []).join("|")}>
   <div class="relative overflow-hidden bg-white/5">
-    <Image
-      src={cover}
-      width={1280}
-      height={720}
+    <img
+      src={cover2x}
+      srcset={`${cover1x} 640w, ${cover2x} 1280w`}
       sizes="(min-width: 768px) 50vw, 100vw"
+      width="1280"
+      height="720"
       loading="lazy"
+      decoding="async"
       alt={project.coverImage?.alt || project.title}
       class="aspect-video w-full object-cover"
     />

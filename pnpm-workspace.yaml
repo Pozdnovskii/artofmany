@@ -2,5 +2,7 @@
 # native packages whose binaries the build needs.
 allowBuilds:
   esbuild: true
-  sharp: true
+  # sharp is only a transitive (optional) dep of Astro; we never invoke it
+  # (imageService: passthrough), so skip building its native binary.
+  sharp: false
   workerd: true

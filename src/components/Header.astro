@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import logo from "@assets/Artofmany_logo.png";
 
 const path = Astro.url.pathname.replace(/\/$/, "");
@@ -13,7 +12,14 @@ const links = [
 <header class="sticky top-0 z-20 bg-bg pt-[6px] pb-2 md:static md:pt-[20px]">
   <div class="wrap flex items-center justify-between gap-[30px]">
     <a href="/" aria-label="Artofmany — home" class="relative z-11 shrink-0">
-      <Image src={logo} alt="Artofmany" loading="eager" class="h-6.5 w-auto" />
+      <img
+        src={logo.src}
+        width={logo.width}
+        height={logo.height}
+        alt="Artofmany"
+        loading="eager"
+        class="h-6.5 w-auto"
+      />
     </a>
 
     <!-- one nav: full-screen overlay on mobile, inline row on desktop -->
