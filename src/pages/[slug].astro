@@ -2,7 +2,7 @@
 import Base from "@layouts/Base.astro";
 import PortableText from "@components/PortableText.astro";
 import VimeoEmbed from "@components/VimeoEmbed.astro";
-import YouTubeEmbed from "@components/YouTubeEmbed.astro";
+import { YouTube } from "@astro-community/astro-embed-youtube";
 import CaseGrid from "@components/CaseGrid.astro";
 import { urlFor } from "@lib/image";
 import { sanityClient } from "@lib/sanity";
@@ -71,7 +71,7 @@ const galleryImages = (project.gallery ?? []).map((img) => ({
       (project.videos ?? []).map((v) => (
         <div data-reveal class="w-full">
           {v._type === "youtube" ? (
-            <YouTubeEmbed url={v.youtubeUrl!} title={project.title} />
+            <YouTube id={v.youtubeUrl!} title={project.title} class="aspect-video w-full" />
           ) : (
             <VimeoEmbed
               url={v.vimeoUrl!}
