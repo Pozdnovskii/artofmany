@@ -1,27 +1,21 @@
 @import "tailwindcss";
 
 @theme {
-  /* Neue Haas Grotesk is the original (commercial, not yet licensed — see
-     REVIEW_NOTES.md). The fallback stack renders very close until it's added. */
   --font-sans:
     "Neue Haas Grotesk", "Helvetica Neue", Helvetica, Arial, system-ui,
     sans-serif;
 
   --color-bg: var(--color-neutral-950);
   --color-ink: var(--color-white);
-  --color-accent: #f7427d; /* brand pink — nearest Tailwind is pink-500 (#ec4899) */
+  --color-accent: #f7427d;
 
-  /* Max content width: 2560px expressed in rem. Generates `max-w-site`. */
   --container-site: 160rem;
 }
 
-/* Base element rules go in @layer base so utility classes (e.g. text-accent on
-   an active link) win — unlayered rules would otherwise override every layer. */
+/* Base rules go in @layer base so utilities (e.g. active-link colour) win. */
 @layer base {
   html {
     @apply antialiased;
-    /* Reserve scrollbar space so opening the menu (body overflow:hidden)
-       doesn't shift the layout. No Tailwind utility for this property. */
     scrollbar-gutter: stable;
   }
 
@@ -42,19 +36,13 @@
   }
 }
 
-/* Centered container: capped width + constant 20px inline padding. */
 .wrap {
   @apply mx-auto w-full max-w-site px-[20px];
 }
-/* Full-bleed container capped at the max width (no inline padding). */
 .maxw {
   @apply mx-auto w-full max-w-site;
 }
 
-/* One <nav> for both breakpoints.
-   Mobile: full-screen overlay, fades in via .open; `inert` (set in JS) keeps
-   links out of the tab order while closed.
-   Desktop (md+): resets to a static inline row. */
 .nav-overlay {
   @apply pointer-events-none fixed inset-0 flex flex-col gap-4 bg-bg px-5 pt-18 opacity-0 transition-opacity duration-300
     md:pointer-events-auto md:static md:flex-row md:items-center md:gap-1.5 md:bg-transparent md:p-0 md:opacity-100;
@@ -63,12 +51,10 @@
   @apply pointer-events-auto opacity-100;
 }
 
-/* Inline links inside body copy (project credits, bios). */
 .prose-links a {
   @apply underline underline-offset-2;
 }
 
-/* Category filter buttons. Active state toggled with .is-active. */
 .filter-btn {
   @apply transition-colors;
   &:hover,
@@ -77,7 +63,6 @@
   }
 }
 
-/* Scroll-reveal: cases/images rise + fade in on entering the viewport. */
 [data-reveal] {
   opacity: 0;
   transform: translateY(60px);

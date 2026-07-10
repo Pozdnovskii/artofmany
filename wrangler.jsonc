@@ -1,7 +1,5 @@
 {
   "compatibility_date": "2026-07-10",
-  // nodejs_compat: lets the @astrojs/cloudflare image endpoint use Node built-ins
-  // in the workerd dev runner. Inert for the fully-prerendered production worker.
   "compatibility_flags": ["global_fetch_strictly_public", "nodejs_compat"],
   "name": "artofmany",
   "main": "@astrojs/cloudflare/entrypoints/server",
@@ -9,9 +7,7 @@
     "directory": "./dist",
     "binding": "ASSETS",
   },
-  // Astro Sessions store — @astrojs/cloudflare v14 auto-requires a "SESSION" KV
-  // binding. The site is fully prerendered and never uses sessions, but the
-  // binding must resolve to a real namespace or `wrangler deploy` fails.
+  // Astro Sessions KV binding (auto-required by @astrojs/cloudflare); must be a real namespace.
   "kv_namespaces": [
     { "binding": "SESSION", "id": "92106b7260f14c66b14f80fe48017cee" },
   ],

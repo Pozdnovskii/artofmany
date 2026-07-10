@@ -4,15 +4,11 @@ import type { ProjectCardData } from "@lib/queries";
 
 interface Props {
   project: ProjectCardData;
-  /** Card title level — one below the grid section heading (h2 on /projects, h3 elsewhere). */
   headingLevel?: 2 | 3;
 }
 const { project, headingLevel = 3 } = Astro.props;
 const Heading = `h${headingLevel}` as "h2" | "h3";
 
-// Covers are 16:9 grid thumbnails (≤1280 CSS px). Sanity's CDN crops, re-encodes
-// to webp/avif and serves from a global cache — no build-time Sharp cost. Two
-// widths cover 1x/2x for the 50vw (desktop) / 100vw (mobile) slots.
 const coverUrl = (w: number) =>
   urlFor(project.coverImage)
     .width(w)
@@ -40,16 +36,16 @@ const cover2x = coverUrl(1280);
     />
   </div>
 
-  <!-- One title = the link. Below the cover on mobile; on desktop it becomes the
-       centred accent hover overlay. The link's ::after stretches the click
-       target over the whole card (image included). -->
   <Heading
     class="px-5 py-3 max-md:font-normal
       md:absolute md:inset-0 md:flex md:items-center md:justify-center md:bg-accent md:p-6
       md:text-center md:text-[30px] md:text-white md:opacity-0 md:transition-opacity md:duration-300
-      md:group-hover:opacity-100"
+      md:group-has-[a:hover]:opacity-100"
   >
-    <a href={`/${project.slug}`} class="after:absolute after:inset-0 after:content-['']">
+    <a
+      href={`/${project.slug}`}
+      class="after:absolute after:inset-0 after:content-[''] md:hover:text-white"
+    >
       {project.title}
     </a>
   </Heading>

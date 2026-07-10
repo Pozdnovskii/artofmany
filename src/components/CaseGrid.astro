@@ -4,7 +4,6 @@ import FilterBar from "@components/FilterBar.astro";
 import { getProjects } from "@lib/queries";
 
 interface Props {
-  /** Section heading level: 1 on the Projects page, 2 where the grid is secondary. */
   headingLevel?: 1 | 2;
 }
 const { headingLevel = 2 } = Astro.props;

@@ -2,9 +2,7 @@ import type { APIRoute } from "astro";
 
 export const prerender = false;
 
-// Origins allowed to trigger a deploy: the hosted Studio and the embedded Studio
-// on sanity.io. CORS is origin-scoped (scheme+host, no path), so the specific
-// studio path can't be enforced here.
+// Only the hosted + embedded Studio origins may trigger a deploy.
 const ALLOWED_ORIGINS = [
   "https://artofmany.sanity.studio",
   "https://www.sanity.io",
@@ -30,8 +28,7 @@ export const OPTIONS: APIRoute = ({ request }) =>
 export const POST: APIRoute = async ({ request }) => {
   const headers = corsHeaders(request.headers.get("origin"));
 
-  // Build-time env, inlined by Vite (locals.runtime.env is a throwing getter on
-  // @astrojs/cloudflare 14). Set SANITY_DEPLOY_HOOK in the Cloudflare build env.
+  // Build-time env (locals.runtime.env throws on @astrojs/cloudflare 14); set SANITY_DEPLOY_HOOK as a Cloudflare build var.
   const hookUrl = import.meta.env.SANITY_DEPLOY_HOOK;
 
   if (!hookUrl) {

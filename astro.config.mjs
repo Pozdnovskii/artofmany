@@ -20,8 +20,6 @@ export default defineConfig({
 
   adapter: cloudflare({
     prerenderEnvironment: "node",
-    // No Sharp anywhere: project covers are optimised by Sanity's CDN, and the
-    // logo is served as-is — so images pass through unprocessed at build.
     imageService: "passthrough",
   }),
 });

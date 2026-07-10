@@ -55,9 +55,6 @@ export interface TeamMember {
 
 const CARD = `_id, title, "slug": slug.current, categories, coverImage`;
 
-// Called by CaseGrid + FilterBar, which render on every page — memoise the
-// fetch at build so it runs once (not ~2× per page). Gated on PROD so `astro
-// dev` still reflects CMS edits without a restart. (build-speed playbook §2)
 let projectsCache: Promise<ProjectCardData[]> | null = null;
 export const getProjects = (): Promise<ProjectCardData[]> => {
   if (import.meta.env.PROD && projectsCache) return projectsCache;

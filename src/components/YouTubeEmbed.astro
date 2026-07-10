@@ -7,7 +7,6 @@ interface Props {
 }
 const { url, title } = Astro.props;
 const id = youTubeId(url);
-// YouTube serves its own thumbnails; maxres isn't always present, fall back to hq.
 const posterSrc = id ? `https://i.ytimg.com/vi/${id}/maxresdefault.jpg` : null;
 const fallback = id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : "";
 ---
@@ -34,7 +33,6 @@ const fallback = id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : "";
 }
 
 <script>
-  // Shared click-to-load facade (same logic as VimeoEmbed; idempotent via data-wired).
   document.querySelectorAll<HTMLElement>(".video-facade").forEach((el) => {
     if (el.dataset.wired) return;
     el.dataset.wired = "1";

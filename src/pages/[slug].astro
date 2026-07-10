@@ -30,8 +30,6 @@ const ogImage = project.coverImage?.asset
   ? urlFor(project.coverImage).width(1200).height(630).fit("crop").url()
   : undefined;
 
-// Full-bleed gallery images — served straight from the Sanity CDN (on-demand
-// resize/format), same as the case-grid covers. No build-time image processing.
 const galleryImages = (project.gallery ?? []).map((img) => ({
   alt: img.alt || project.title,
   src: urlFor(img).width(2560).quality(82).auto("format").url(),
@@ -55,7 +53,6 @@ const galleryImages = (project.gallery ?? []).map((img) => ({
       )
     }
 
-    <!-- full-bleed media, edge to edge, minimal gaps -->
     <section aria-label="Media" class="flex flex-col gap-1">
     {
       galleryImages.map((img) => (

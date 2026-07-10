@@ -36,7 +36,6 @@ const posterSrc = poster?.asset ? urlFor(poster).width(1800).quality(80).auto("f
 }
 
 <script>
-  // Click-to-load facade — no third-party JS until the visitor plays the video.
   document.querySelectorAll<HTMLElement>(".video-facade").forEach((el) => {
     if (el.dataset.wired) return;
     el.dataset.wired = "1";

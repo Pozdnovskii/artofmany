@@ -10,7 +10,6 @@ const offices = about?.offices ?? [];
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-// Email / phone lines become mailto: / tel: links.
 function lineHref(line: string): string | null {
   if (line.includes("@")) return `mailto:${line.trim()}`;
   if (/^\+?[\d][\d\s]{6,}$/.test(line.trim())) return `tel:${line.replace(/\s+/g, "")}`;
@@ -34,7 +33,6 @@ function lineHref(line: string): string | null {
             {social.length > 0 && (
               <div class="flex flex-wrap items-center gap-x-1.5">
                 {social.map((s, i) => (
-                  // slash grouped with its link so it never wraps alone
                   <span class="inline-flex items-center gap-x-1.5 whitespace-nowrap">
                     {i > 0 && <span>/</span>}
                     <a href={s.url} target="_blank" rel="noopener noreferrer" class="hover:text-accent">

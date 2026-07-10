@@ -23,8 +23,6 @@ const categories = CATEGORY_ORDER.filter((c) => present.has(c));
   >
   {
     categories.map((c) => (
-      // slash + category grouped in a non-wrapping unit so the "/" never
-      // dangles at the end of a line — it wraps together with its category.
       <span class="inline-flex items-center gap-x-1.5 whitespace-nowrap">
         <span>/</span>
         <button type="button" class="filter-btn" data-filter={c}>
