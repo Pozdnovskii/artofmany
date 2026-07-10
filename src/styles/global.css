@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: var(--color-neutral-50);
+  --color-ink: var(--color-neutral-900);
+}

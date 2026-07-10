@@ -1,0 +1,19 @@
+# build
+dist/
+.astro/
+.wrangler/
+node_modules/
+
+# env
+.env
+.env.*
+!.env.example
+
+# editor/os
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+
+# sanity
+studio/dist/
+studio/.sanity/

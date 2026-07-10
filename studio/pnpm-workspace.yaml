@@ -1,0 +1,6 @@
+# Presence of this file stops pnpm's upward workspace-root search at this
+# directory, keeping studio/ an independent install from the site root
+# (otherwise pnpm treats the root pnpm-workspace.yaml as the workspace root
+# and silently no-ops installs run from here).
+allowBuilds:
+  esbuild: true
