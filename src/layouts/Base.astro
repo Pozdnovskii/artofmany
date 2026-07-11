@@ -9,10 +9,13 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site).href.replace(
-  /\/$/,
-  "",
-);
+// build.format "file" puts the output filename in Astro.url at prerender —
+// strip ".html"/"index.html" (and any trailing slash) so canonical matches
+// the clean sitemap route.
+const canonical = new URL(Astro.url.pathname, Astro.site).href
+  .replace(/index\.html$/, "")
+  .replace(/\.html$/, "")
+  .replace(/\/$/, "");
 const desc =
   description ??
   "Artofmany — interdisciplinary creative studio by Jofre Sanfeliu, Barcelona & Dubai.";

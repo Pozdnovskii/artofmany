@@ -21,6 +21,7 @@ export interface ProjectCardData {
   slug: string;
   categories?: string[];
   coverImage: ImageWithAlt;
+  coverVideoUrl?: string | null;
 }
 export interface Project extends ProjectCardData {
   description?: PortableTextBlock[];
@@ -55,7 +56,7 @@ export interface TeamMember {
   contactLinks?: { _key: string; label: string; url: string }[];
 }
 
-const CARD = `_id, title, "slug": slug.current, categories, coverImage`;
+const CARD = `_id, title, "slug": slug.current, categories, coverImage, "coverVideoUrl": coverVideo.asset->url`;
 
 let projectsCache: Promise<ProjectCardData[]> | null = null;
 export const getProjects = (): Promise<ProjectCardData[]> => {
@@ -88,8 +89,5 @@ export const getTeam = (): Promise<TeamMember[]> =>
   sanityClient.fetch(
     `*[_type == "teamMember"] | order(order asc){ name, role, bio, photo, contactLinks }`,
   );
-
-export const getHomeVideoUrl = (): Promise<string | null> =>
-  sanityClient.fetch(`*[_id == "homePage"][0].backgroundVideo.asset->url`);
 
 export type { SanityImageSource };

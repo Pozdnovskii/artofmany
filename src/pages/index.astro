@@ -1,27 +1,26 @@
 ---
 import Base from "@layouts/Base.astro";
 import CaseGrid from "@components/CaseGrid.astro";
-import { getHomeVideoUrl } from "@lib/queries";
-
-const videoUrl = await getHomeVideoUrl();
+import heroWebm from "@assets/hero.webm";
+import heroMp4 from "@assets/hero.mp4";
+import heroPoster from "@assets/hero-poster.jpg";
 ---
 
 <Base title="Artofmany — Interdisciplinary Creative Studio">
   <h1 class="sr-only">Artofmany — interdisciplinary creative studio</h1>
 
-  {
-    videoUrl && (
-      <video
-        src={videoUrl}
-        autoplay
-        muted
-        loop
-        playsinline
-        preload="auto"
-        class="aspect-video w-full object-cover mb-4"
-      />
-    )
-  }
+  <video
+    poster={heroPoster.src}
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="metadata"
+    class="aspect-video w-full object-cover mb-4"
+  >
+    <source src={heroWebm} type="video/webm" />
+    <source src={heroMp4} type="video/mp4" />
+  </video>
 
   <CaseGrid />
 </Base>

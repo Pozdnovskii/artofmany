@@ -1,18 +1,32 @@
 ---
 import SanityImage from "@components/SanityImage.astro";
+import { urlFor } from "@lib/image";
 import type { ProjectCardData } from "@lib/queries";
 
 interface Props {
   project: ProjectCardData;
   headingLevel?: 2 | 3;
+  reveal?: boolean;
 }
-const { project, headingLevel = 3 } = Astro.props;
+const { project, headingLevel = 3, reveal = true } = Astro.props;
 const Heading = `h${headingLevel}` as "h2" | "h3";
+
+// Animated GIF covers were converted to muted-loop video; poster = flattened
+// first frame (fast, becomes the paint before the video buffers).
+const posterUrl = project.coverVideoUrl
+  ? urlFor(project.coverImage)
+      .width(1280)
+      .height(720)
+      .fit("crop")
+      .format("jpg")
+      .quality(70)
+      .url()
+  : undefined;
 ---
 
 <li
   class="group relative flex flex-col-reverse gap-y-1"
-  data-reveal
+  data-reveal={reveal ? true : undefined}
   data-categories={(project.categories ?? []).join("|")}
 >
   <Heading
@@ -29,13 +43,29 @@ const Heading = `h${headingLevel}` as "h2" | "h3";
     </a>
   </Heading>
 
-  <SanityImage
-    image={project.coverImage}
-    ratio={16 / 9}
-    widths={[640, 1280]}
-    quality={75}
-    sizes="(min-width: 768px) 50vw, 100vw"
-    alt={project.coverImage?.alt || project.title}
-    class="aspect-video w-full object-cover"
-  />
+  {
+    project.coverVideoUrl ? (
+      <video
+        src={project.coverVideoUrl}
+        poster={posterUrl}
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        aria-label={project.coverImage?.alt || project.title}
+        class="aspect-video w-full object-cover"
+      />
+    ) : (
+      <SanityImage
+        image={project.coverImage}
+        ratio={16 / 9}
+        widths={[640, 1280]}
+        quality={75}
+        sizes="(min-width: 768px) 50vw, 100vw"
+        alt={project.coverImage?.alt || project.title}
+        class="aspect-video w-full object-cover"
+      />
+    )
+  }
 </li>

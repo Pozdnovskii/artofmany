@@ -17,6 +17,10 @@ const projects = await getProjects();
   <SectionHeading id="work-heading" class="sr-only">Projects</SectionHeading>
   <FilterBar />
   <ul id="grid" class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-1">
-    {projects.map((p) => <ProjectCard project={p} headingLevel={cardLevel} />)}
+    {
+      projects.map((p, i) => (
+        <ProjectCard project={p} headingLevel={cardLevel} reveal={i >= 4} />
+      ))
+    }
   </ul>
 </section>

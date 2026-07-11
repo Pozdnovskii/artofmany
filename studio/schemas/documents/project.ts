@@ -33,6 +33,15 @@ export const project = defineType({
     }),
     imageWithAlt("coverImage", "Cover image *", { required: true }),
     defineField({
+      name: "coverVideo",
+      title: "Cover video",
+      type: "file",
+      group: "content",
+      description:
+        "Optional. If set, the card plays this muted loop instead of the cover image (used for animated covers). Cover image is still required — it is the poster.",
+      options: { accept: "video/mp4" },
+    }),
+    defineField({
       name: "gallery",
       title: "Gallery",
       type: "array",
