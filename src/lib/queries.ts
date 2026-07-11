@@ -32,7 +32,9 @@ export interface Project extends ProjectCardData {
 export interface Office {
   _key: string;
   city: string;
-  addressLines?: string[];
+  address: string;
+  email: string;
+  phone: string;
   mapLink?: string;
 }
 export interface SocialLink {

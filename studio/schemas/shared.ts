@@ -50,6 +50,9 @@ export const imageWithAlt = (
     name,
     type: "image",
     title,
+    // Focal point (defaults to centre). Editors move the dot to steer the
+    // aspect-crop of covers/photos; the crop rectangle can be left untouched.
+    options: { hotspot: true },
     validation: opts?.required ? (r) => r.required() : undefined,
     fields: [
       defineField({

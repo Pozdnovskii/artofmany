@@ -1,0 +1,54 @@
+---
+type LinkItem = { label: string; url: string };
+type TagItem = { label: string; filter: string; active?: boolean };
+type Item = LinkItem | TagItem;
+
+interface Props {
+  items: Item[];
+  class?: string;
+}
+const { items, class: className } = Astro.props;
+
+function hrefFor(raw: string): string {
+  const v = raw.trim();
+  if (/^(https?:|mailto:|tel:)/i.test(v)) return v;
+  if (v.includes("@")) return `mailto:${v}`;
+  if (/^\+?[\d][\d\s()-]{6,}$/.test(v))
+    return `tel:${v.replace(/[\s()-]/g, "")}`;
+  return v;
+}
+
+const rendered = items.map((item) => {
+  if (!("url" in item)) return item;
+  const href = hrefFor(item.url);
+  return { label: item.label, href, external: /^https?:/i.test(href) };
+});
+---
+
+<ul class:list={["flex flex-wrap items-center gap-x-1.5 gap-y-1", className]}>
+  {
+    rendered.map((item, i) => (
+      <li class="inline-flex items-center gap-x-1.5 whitespace-nowrap">
+        {i > 0 && <span aria-hidden="true">/</span>}
+        {"href" in item ? (
+          <a
+            href={item.href}
+            target={item.external ? "_blank" : undefined}
+            rel={item.external ? "noopener noreferrer" : undefined}
+            class="hover:text-accent"
+          >
+            {item.label}
+          </a>
+        ) : (
+          <button
+            type="button"
+            class:list={["filter-btn", item.active && "is-active"]}
+            data-filter={item.filter}
+          >
+            {item.label}
+          </button>
+        )}
+      </li>
+    ))
+  }
+</ul>

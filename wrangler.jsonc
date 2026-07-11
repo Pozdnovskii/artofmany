@@ -1,5 +1,5 @@
 {
-  "compatibility_date": "2026-07-10",
+  "compatibility_date": "2026-07-09",
   "compatibility_flags": ["global_fetch_strictly_public", "nodejs_compat"],
   "name": "artofmany",
   "main": "@astrojs/cloudflare/entrypoints/server",

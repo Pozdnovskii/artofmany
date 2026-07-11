@@ -1,0 +1,76 @@
+---
+import { urlFor } from "@lib/image";
+import type { ImageWithAlt } from "@lib/queries";
+
+interface Props {
+  image: ImageWithAlt;
+  sizes: string;
+  ratio?: number; // width/height — set → crop to this aspect; omit → natural
+  widths?: number[];
+  quality?: number;
+  priority?: boolean;
+  alt?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  image,
+  sizes,
+  ratio,
+  widths = [640, 960, 1280, 1920, 2560],
+  quality = 82,
+  priority = false,
+  alt,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const ref = image?.asset?._ref;
+// Safety net: an element published without an uploaded asset would make urlFor throw.
+if (!ref) return;
+
+// Intrinsic size + format live in the asset ref (…-WxH-fmt). Use the size when
+// `dimensions` isn't projected (e.g. covers) for natural width/height + srcset caps.
+const refMatch = ref.match(/-(\d+)x(\d+)-(\w+)$/);
+const intrinsicW =
+  image.dimensions?.width ?? (refMatch ? Number(refMatch[1]) : undefined);
+const intrinsicH =
+  image.dimensions?.height ?? (refMatch ? Number(refMatch[2]) : undefined);
+
+// Sanity's CDN drops all frames of an animated GIF on ANY transform (resize,
+// crop, or format), so serve the untouched original and let CSS crop it.
+const isGif = refMatch?.[3] === "gif";
+
+const url = (w: number) => {
+  let b = urlFor(image).width(w).quality(quality).auto("format");
+  b = ratio ? b.height(Math.round(w / ratio)).fit("crop") : b.fit("max");
+  return b.url();
+};
+
+const list =
+  ratio || !intrinsicW ? widths : widths.filter((w) => w <= intrinsicW);
+const finalWidths = list.length ? list : [intrinsicW ?? widths[0]];
+const base = finalWidths[finalWidths.length - 1];
+
+const src = isGif ? urlFor(image).url() : url(base);
+const srcset = isGif
+  ? undefined
+  : finalWidths.map((w) => `${url(w)} ${w}w`).join(", ");
+const attrW = ratio ? base : intrinsicW;
+const attrH = ratio ? Math.round(base / ratio) : intrinsicH;
+---
+
+<img
+  src={src}
+  srcset={srcset}
+  sizes={srcset ? sizes : undefined}
+  width={attrW}
+  height={attrH}
+  alt={alt ?? image.alt ?? ""}
+  loading={priority ? "eager" : "lazy"}
+  decoding={priority ? "sync" : "async"}
+  fetchpriority={priority ? "high" : undefined}
+  class={className}
+  {...rest}
+/>

@@ -37,8 +37,10 @@ export const teamMember = defineType({
             }),
             defineField({
               name: "url",
-              type: "url",
-              title: "URL *",
+              type: "string",
+              title: "URL, email or phone *",
+              description:
+                "Full link (https://…), or a bare email / phone — mailto: and tel: are added on the site automatically.",
               validation: (r) => r.required(),
             }),
           ],

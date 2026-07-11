@@ -10,9 +10,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro",
-    "import:dry": "node scripts/import-projects.mjs --dry-run",
-    "import": "node --env-file=.env scripts/import-projects.mjs"
+    "astro": "astro"
   },
   "dependencies": {
     "@astro-community/astro-embed-youtube": "^0.5.10",

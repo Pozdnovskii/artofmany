@@ -34,6 +34,10 @@
   video {
     @apply block max-w-full;
   }
+
+  address {
+    @apply not-italic;
+  }
 }
 
 .wrap {
@@ -43,20 +47,19 @@
   @apply mx-auto w-full max-w-site;
 }
 
-.nav-overlay {
+#nav-menu {
   @apply pointer-events-none fixed inset-0 flex flex-col gap-4 bg-bg px-5 pt-18 opacity-0 transition-opacity duration-300
     md:pointer-events-auto md:static md:flex-row md:items-center md:gap-1.5 md:bg-transparent md:p-0 md:opacity-100;
+  &.open {
+    @apply pointer-events-auto opacity-100;
+  }
 }
-.nav-overlay.open {
-  @apply pointer-events-auto opacity-100;
-}
-
 .prose-links a {
   @apply underline underline-offset-2;
 }
 
 .filter-btn {
-  @apply transition-colors;
+  @apply transition-colors cursor-pointer;
   &:hover,
   &.is-active {
     @apply text-accent;

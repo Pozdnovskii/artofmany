@@ -1,0 +1,13 @@
+# Artofmany
+
+> Artofmany is an interdisciplinary creative studio founded by Jofre Sanfeliu, with offices in Barcelona and Dubai. The site is a portfolio of brand direction, campaigns, exhibitions, editorial, and film work.
+
+## Main pages
+
+- [Home](https://artofmany.com/): Project grid with filtering by category (Public, Private, Brand Direction, Campaigns, Exhibitions, Editorial, Films, Lab, Archive).
+- [About](https://artofmany.com/about): Studio bio and office contacts in Barcelona and Dubai.
+- [Team](https://artofmany.com/team): The people behind Artofmany.
+
+## More
+
+- [Sitemap](https://artofmany.com/sitemap-index.xml): Full list of individual project pages.

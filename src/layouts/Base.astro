@@ -6,12 +6,17 @@ import Footer from "@components/Footer.astro";
 interface Props {
   title: string;
   description?: string;
-  ogImage?: string;
 }
 
-const { title, description, ogImage } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site).href.replace(/\/$/, "");
-const desc = description ?? "Artofmany — interdisciplinary creative studio by Jofre Sanfeliu, Barcelona & Dubai.";
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href.replace(
+  /\/$/,
+  "",
+);
+const desc =
+  description ??
+  "Artofmany — interdisciplinary creative studio by Jofre Sanfeliu, Barcelona & Dubai.";
+const ogImg = new URL("/og.png", Astro.site).href;
 ---
 
 <html lang="en">
@@ -24,13 +29,25 @@ const desc = description ?? "Artofmany — interdisciplinary creative studio by 
     <meta name="description" content={desc} />
     <link rel="canonical" href={canonical} />
 
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Artofmany." />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#f7427d" />
+
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Artofmany" />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={desc} />
     <meta property="og:url" content={canonical} />
-    {ogImage && <meta property="og:image" content={ogImage} />}
-    <meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
+    <meta property="og:image" content={ogImg} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Artofmany" />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body class="flex min-h-screen flex-col">
     <Header />

@@ -10,7 +10,7 @@ export default defineConfig({
 
   devToolbar: { enabled: false },
 
-  build: { format: "file" },
+  build: { format: "file", inlineStylesheets: "always" },
 
   integrations: [sitemap()],
 

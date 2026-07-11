@@ -13,10 +13,10 @@ const cardLevel = (headingLevel + 1) as 2 | 3;
 const projects = await getProjects();
 ---
 
-<section id="work" aria-labelledby="work-heading" class="maxw px-0 py-1">
+<section id="work" aria-labelledby="work-heading" class="maxw">
   <SectionHeading id="work-heading" class="sr-only">Projects</SectionHeading>
   <FilterBar />
-  <ul id="grid" class="grid grid-cols-1 gap-1 md:grid-cols-2">
+  <ul id="grid" class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-1">
     {projects.map((p) => <ProjectCard project={p} headingLevel={cardLevel} />)}
   </ul>
 </section>

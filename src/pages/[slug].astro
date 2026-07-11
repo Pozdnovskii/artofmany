@@ -4,7 +4,7 @@ import PortableText from "@components/PortableText.astro";
 import VimeoEmbed from "@components/VimeoEmbed.astro";
 import { YouTube } from "@astro-community/astro-embed-youtube";
 import CaseGrid from "@components/CaseGrid.astro";
-import { urlFor } from "@lib/image";
+import SanityImage from "@components/SanityImage.astro";
 import { sanityClient } from "@lib/sanity";
 import type { Project } from "@lib/queries";
 
@@ -12,7 +12,8 @@ export async function getStaticPaths() {
   const projects: Project[] = await sanityClient.fetch(
     `*[_type == "project" && defined(slug.current)] | order(order asc){
       _id, title, "slug": slug.current, categories, coverImage,
-      description, gallery, videos, metaTitle, metaDescription
+      description, videos, metaTitle, metaDescription,
+      gallery[]{ ..., "dimensions": asset->metadata.dimensions }
     }`,
   );
   return projects.map((project) => ({
@@ -25,63 +26,56 @@ interface Props {
   project: Project;
 }
 const { project } = Astro.props;
-
-const ogImage = project.coverImage?.asset
-  ? urlFor(project.coverImage).width(1200).height(630).fit("crop").url()
-  : undefined;
-
-const galleryImages = (project.gallery ?? []).map((img) => ({
-  alt: img.alt || project.title,
-  src: urlFor(img).width(2560).quality(82).auto("format").url(),
-  src1280: urlFor(img).width(1280).quality(82).auto("format").url(),
-}));
 ---
 
 <Base
   title={project.metaTitle || `${project.title} — Artofmany`}
   description={project.metaDescription}
-  ogImage={ogImage}
 >
-  <article aria-labelledby="case-title">
+  <article aria-labelledby="case-title" class="mb-15">
     <h1 id="case-title" class="sr-only">{project.title}</h1>
 
     {
       project.description && (
-        <div class="wrap pb-6 md:pb-8">
-          <PortableText value={project.description} class="max-w-2xl" />
-        </div>
+        <PortableText
+          value={project.description}
+          class="wrap pb-6 md:pb-8 *:max-w-2xl"
+        />
       )
     }
 
     <section aria-label="Media" class="flex flex-col gap-1">
-    {
-      galleryImages.map((img) => (
-        <img
-          data-reveal
-          src={img.src}
-          srcset={`${img.src1280} 1280w, ${img.src} 2560w`}
-          sizes="100vw"
-          alt={img.alt}
-          loading="lazy"
-          class="w-full"
-        />
-      ))
-    }
-    {
-      (project.videos ?? []).map((v) => (
-        <div data-reveal class="w-full">
-          {v._type === "youtube" ? (
-            <YouTube id={v.youtubeUrl!} title={project.title} class="aspect-video w-full" />
-          ) : (
-            <VimeoEmbed
-              url={v.vimeoUrl!}
-              poster={v.poster}
-              title={project.title}
-            />
-          )}
-        </div>
-      ))
-    }
+      {
+        (project.gallery ?? []).map((img, i) => (
+          <SanityImage
+            image={img}
+            sizes="100vw"
+            priority={i < 2}
+            alt={img.alt || project.title}
+            class="w-full"
+            data-reveal={i >= 2 ? true : undefined}
+          />
+        ))
+      }
+      {
+        (project.videos ?? []).map((v) => (
+          <div data-reveal class="w-full">
+            {v._type === "youtube" ? (
+              <YouTube
+                id={v.youtubeUrl!}
+                title={project.title}
+                class="aspect-video w-full"
+              />
+            ) : (
+              <VimeoEmbed
+                url={v.vimeoUrl!}
+                poster={v.poster}
+                title={project.title}
+              />
+            )}
+          </div>
+        ))
+      }
     </section>
   </article>
 

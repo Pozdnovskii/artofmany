@@ -1,7 +1,8 @@
 ---
 import Base from "@layouts/Base.astro";
 import CaseGrid from "@components/CaseGrid.astro";
-import { urlFor } from "@lib/image";
+import SlashList from "@components/SlashList.astro";
+import SanityImage from "@components/SanityImage.astro";
 import { getTeam } from "@lib/queries";
 
 const team = await getTeam();
@@ -11,45 +12,40 @@ const team = await getTeam();
   title="Team — Artofmany"
   description="The people behind Artofmany — Barcelona & Dubai."
 >
-  <div class="wrap py-6 md:py-8">
+  <section class="wrap pt-6 mb-15">
     <h1 class="sr-only">Team</h1>
 
-    <ul class="flex max-w-2xl flex-col gap-12 md:gap-14">
+    <ul class="flex max-w-2xl flex-col gap-15">
       {
-        team.map((member) => {
-          const photo = urlFor(member.photo).width(600).height(600).fit("crop").quality(82).auto("format").url();
+        team.map((member, i) => {
           const contacts = member.contactLinks ?? [];
           return (
             <li>
-              <article>
-                <h2 class="mb-1">{member.role ? `${member.name}, ${member.role}` : member.name}</h2>
-                <img
-                  src={photo}
-                  alt={member.photo.alt || member.name}
-                  width="600"
-                  height="600"
-                  loading="lazy"
-                  class="w-[260px] max-w-full"
-                />
+              <article class="flex flex-col gap-y-4">
+                <h2 class="-order-1">
+                  {member.role ? `${member.name}, ${member.role}` : member.name}
+                </h2>
+
                 {member.bio && (
-                  <div class="mt-4 space-y-3">
+                  <div class="space-y-3">
                     {member.bio.split(/\n\n+/).map((p) => (
                       <p>{p}</p>
                     ))}
                   </div>
                 )}
+
+                <SanityImage
+                  image={member.photo}
+                  ratio={1}
+                  widths={[600, 1200]}
+                  sizes="260px"
+                  priority={i === 0}
+                  alt={member.photo.alt || member.name}
+                  class="w-[260px] max-w-full -order-1"
+                />
                 {contacts.length > 0 && (
-                  <address class="mt-4 flex flex-wrap gap-x-5 not-italic">
-                    {contacts.map((link) => (
-                      <a
-                        href={link.url}
-                        target={link.url.startsWith("mailto:") ? undefined : "_blank"}
-                        rel="noopener noreferrer"
-                        class="hover:text-accent"
-                      >
-                        {link.label}
-                      </a>
-                    ))}
+                  <address>
+                    <SlashList items={contacts} />
                   </address>
                 )}
               </article>
@@ -58,7 +54,7 @@ const team = await getTeam();
         })
       }
     </ul>
-  </div>
+  </section>
 
   <CaseGrid />
 </Base>

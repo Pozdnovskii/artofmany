@@ -1,4 +1,5 @@
 ---
+import SlashList from "@components/SlashList.astro";
 import { getProjects } from "@lib/queries";
 
 const projects = await getProjects();
@@ -15,23 +16,14 @@ const CATEGORY_ORDER = [
 ];
 const present = new Set(projects.flatMap((p) => p.categories ?? []));
 const categories = CATEGORY_ORDER.filter((c) => present.has(c));
+
+const filters = [
+  { label: "All", filter: "all", active: true },
+  ...categories.map((c) => ({ label: c, filter: c })),
+];
 ---
 
-<div class="wrap flex flex-wrap items-center gap-x-1.5 gap-y-1 pb-2">
-  <button type="button" class="filter-btn is-active" data-filter="all"
-    >All</button
-  >
-  {
-    categories.map((c) => (
-      <span class="inline-flex items-center gap-x-1.5 whitespace-nowrap">
-        <span>/</span>
-        <button type="button" class="filter-btn" data-filter={c}>
-          {c}
-        </button>
-      </span>
-    ))
-  }
-</div>
+<SlashList items={filters} class="wrap pb-2" />
 
 <script>
   const buttons = document.querySelectorAll<HTMLButtonElement>(".filter-btn");
