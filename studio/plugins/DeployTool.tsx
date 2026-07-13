@@ -4,6 +4,11 @@ import { RocketIcon } from "@sanity/icons";
 
 type Status = "idle" | "deploying" | "success" | "error";
 
+// The Studio is hosted separately, so this must be absolute. artofmany.com still
+// points at the old Cargo site — switch this over once the domain is attached to
+// the Worker (and add the new origin to ALLOWED_ORIGINS in src/pages/api/deploy.ts).
+const SITE_ORIGIN = "https://artofmany.dvaivananadivane.workers.dev";
+
 export function DeployTool() {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
@@ -13,7 +18,7 @@ export function DeployTool() {
     setErrorMsg("");
 
     try {
-      const res = await fetch("https://artofmany.com/api/deploy", {
+      const res = await fetch(`${SITE_ORIGIN}/api/deploy`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: "{}",
@@ -41,8 +46,9 @@ export function DeployTool() {
           <Heading size={2}>Deploy site</Heading>
 
           <Text muted size={1}>
-            Triggers a rebuild and deployment of <strong>artofmany.com</strong>{" "}
-            via Cloudflare Workers.
+            Triggers a rebuild and deployment of{" "}
+            <strong>{new URL(SITE_ORIGIN).hostname}</strong> via Cloudflare
+            Workers.
             <br />
             The build usually takes a few minutes.
           </Text>
